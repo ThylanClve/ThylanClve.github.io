@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify 2023 : Les Secrets d'un Succès Planétaire</title>
+    <link rel="stylesheet" href="styleDATAVIZ.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="scriptDATAVIZ.js"></script>
+</head>
+<body>
+
+
+    <!-- Hero Section -->
+    <header class="header">
+        <div class="header-particles"></div>
+        <div class="header-content fade-in">
+            <span class="header-icon">🎵</span>
+            <h1 class="header-title">Les Secrets Mathématiques d'un Succès Planétaire</h1>
+            <p class="header-subtitle">
+                Une enquête data-journalistique sur l'anatomie des hits qui ont dominé Spotify en 2023
+            </p>
+            <div class="scroll-indicator">
+                <span>⬇</span>
+                <p>Découvrez l'enquête</p>
+            </div>
+        </div>
+    </header>
+
+
+
+    <main class="main-content">
+        <!-- Introduction narrative -->
+        <section class="narrative-intro scroll-reveal">
+            <div class="narrative-badge">📊 ENQUÊTE EXCLUSIVE</div>
+            <h2 class="narrative-title">Qu'est-ce qui fait qu'une chanson devient un phénomène mondial ?</h2>
+            <p class="narrative-text">
+                En analysant les données de centaines de titres les plus streamés en 2023, nous avons découvert 
+                des patterns fascinants. Tempo, énergie, positivité... rien n'est laissé au hasard. 
+                Plongeons dans les coulisses algorithmiques de l'industrie musicale moderne.
+            </p>
+        </section>
+
+
+
+        <!-- KPIs Section avec animation -->
+        <section class="kpi-section scroll-reveal">
+            <h2 class="section-subtitle">Les chiffres qui parlent d'eux-mêmes</h2>
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-icon">👑</div>
+                    <div class="kpi-label">Champion incontesté</div>
+                    <div class="kpi-value" id="kpi-top-track" data-target="">Chargement...</div>
+                    <div class="kpi-subtext" id="kpi-top-track-streams"></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon">🎹</div>
+                    <div class="kpi-label">Le tempo magique</div>
+                    <div class="kpi-value" id="kpi-avg-bpm" data-target="0">--</div>
+                    <div class="kpi-subtext">Le BPM moyen des succès</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon">🎤</div>
+                    <div class="kpi-label">Roi de l'algorithme</div>
+                    <div class="kpi-value" id="kpi-top-artist" data-target="">Chargement...</div>
+                    <div class="kpi-subtext" id="kpi-top-artist-count"></div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <!-- Chapitre 1: BPM -->
+        <section class="story-chapter scroll-reveal">
+            <div class="chapter-header">
+                <span class="chapter-number">Chapitre 1</span>
+                <h2 class="chapter-title">Le Code Secret du Tempo</h2>
+            </div>
+            <p class="chapter-intro">
+                Pourquoi 120 BPM est-il le tempo le plus présent dans les hits mondiaux ? 
+                La science et la psychologie ont une réponse fascinante.
+            </p>
+
+            <div class="chart-container">
+                <div id="bpm-histogram" class="chart"></div>
+            </div>
+
+            <div class="insight-box">
+                <div class="insight-header">
+                    <span class="insight-icon">💡</span>
+                    <span class="insight-title">Décryptage scientifique</span>
+                </div>
+                <p class="insight-text">
+                    <strong>120 BPM : le tempo parfait.</strong> Ce n'est pas un hasard si la majorité des hits 
+                    se situent entre 100 et 130 battements par minute. Cette plage correspond au rythme cardiaque 
+                    d'une personne en mouvement modéré — exactement l'état d'excitation que recherchent les auditeurs. 
+                    Les neurosciences montrent que notre cerveau synchronise naturellement son activité avec le tempo musical. 
+                    <br><br>
+                    Les producteurs le savent : <strong>un tempo trop lent endort, un tempo trop rapide fatigue.</strong> 
+                    120 BPM est le "sweet spot" qui maximise l'engagement sans épuiser l'auditeur. 
+                    C'est pourquoi ce tempo domine les playlists "Workout", "Party" et "Top Hits" de Spotify.
+                </p>
+            </div>
+        </section>
+
+
+
+        <!-- Chapitre 2: Danceability vs Valence -->
+        <section class="story-chapter scroll-reveal">
+            <div class="chapter-header">
+                <span class="chapter-number">Chapitre 2</span>
+                <h2 class="chapter-title">La Formule du Bonheur Dansant</h2>
+            </div>
+            <p class="chapter-intro">
+                Les algorithmes de Spotify mesurent deux dimensions cruciales : la "danceability" (capacité à danser) 
+                et la "valence" (positivité émotionnelle). Leur corrélation révèle une vérité marketing implacable.
+            </p>
+
+            <div class="chart-container">
+                <div id="scatter-plot" class="chart"></div>
+                <p class="chart-legend">
+                    💡 <strong>Taille des bulles</strong> = nombre de streams • 
+                    <strong>Couleur</strong> = énergie du morceau
+                </p>
+            </div>
+
+            <div class="insight-box">
+                <div class="insight-header">
+                    <span class="insight-icon">🔬</span>
+                    <span class="insight-title">L'équation gagnante</span>
+                </div>
+                <p class="insight-text">
+                    <strong>Les hits ne laissent rien au hasard.</strong> Ce graphique révèle une corrélation positive 
+                    nette : plus un morceau est dansant, plus il est joyeux. Et ce n'est pas une coïncidence.
+                    <br><br>
+                    Les plus gros succès (représentés par les bulles les plus larges) se concentrent dans le 
+                    <strong>quadrant supérieur droit</strong> : haute danceability + haute valence. Pourquoi ? 
+                    Parce que Spotify favorise algorithmiquement les morceaux qui :
+                    <br>
+                    <strong>1.</strong> Génèrent de l'engagement physique (on bouge, on danse)<br>
+                    <strong>2.</strong> Créent une émotion positive (on réécoute, on partage)<br>
+                    <strong>3.</strong> Maintiennent l'écoute active (pas de skip)
+                    <br><br>
+                    Les artistes et producteurs optimisent désormais leurs compositions pour ce double critère. 
+                    La musique triste et lente ? Reléguée aux playlists de niche.
+                </p>
+            </div>
+        </section>
+
+
+
+        <!-- Chapitre 3: Top Artistes -->
+        <section class="story-chapter scroll-reveal">
+            <div class="chapter-header">
+                <span class="chapter-number">Chapitre 3</span>
+                <h2 class="chapter-title">Les Maîtres de l'Algorithme</h2>
+            </div>
+            <p class="chapter-intro">
+                Certains artistes dominent Spotify avec une stratégie redoutable : 
+                la multiplication des singles plutôt que les albums traditionnels.
+            </p>
+
+            <div class="chart-container">
+                <div id="artists-bar" class="chart"></div>
+            </div>
+
+            <div class="insight-box">
+                <div class="insight-header">
+                    <span class="insight-icon">🎯</span>
+                    <span class="insight-title">La stratégie du streaming</span>
+                </div>
+                <p class="insight-text">
+                    <strong>La présence massive de certains artistes n'est pas un accident.</strong> 
+                    Ces musiciens ont compris les règles du jeu algorithmique de Spotify : 
+                    <br><br>
+                    <strong>• Sortir des singles régulièrement</strong> plutôt qu'attendre un album complet<br>
+                    <strong>• Maximiser les points d'entrée</strong> pour apparaître dans plus de playlists algorithmiques<br>
+                    <strong>• Maintenir une "freshness"</strong> constante dans le feed des utilisateurs
+                    <br><br>
+                    Un artiste qui sort 10 singles sur l'année a 10 fois plus de chances d'être découvert 
+                    qu'un artiste qui sort un album de 10 titres d'un coup. C'est mathématique, c'est brutal, 
+                    et ça a révolutionné l'industrie musicale.
+                    <br><br>
+                    <em>Résultat : les albums conceptuels et les œuvres longues deviennent des reliques du passé, 
+                    remplacés par un flux constant de singles optimisés pour les algorithmes.</em>
+                </p>
+            </div>
+        </section>
+
+
+
+        <!-- Conclusion -->
+        <section class="narrative-conclusion scroll-reveal">
+            <div class="conclusion-icon">🎧</div>
+            <h2 class="conclusion-title">Ce que révèle cette enquête</h2>
+            <p class="conclusion-text">
+                Les données de Spotify 2023 nous montrent une industrie musicale en pleine transformation. 
+                Les hits ne sont plus le fruit du hasard ou du seul talent : ils sont <strong>engineered</strong>, 
+                optimisés, calibrés pour séduire simultanément les oreilles humaines et les algorithmes de recommandation.
+                <br><br>
+                Entre science du tempo, psychologie des émotions et stratégies de distribution, 
+                la musique moderne est devenue un sport de données. Et les artistes qui dominent ? 
+                Ce sont ceux qui ont appris à jouer avec les règles du jeu.
+            </p>
+            <div class="conclusion-cta">
+                <p>💬 Partagez cette enquête avec vos amis mélomanes</p>
+            </div>
+        </section>
+    </main>
+
+
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p><strong>SAE 303 2026</strong> • Données Spotify • Projet Universitaire</p>
+        <p class="footer-note">Réalisé avec Plotly.js</p>
+        <p class="footer-credits">Design inspiré par la charte graphique Spotify • 2025</p>
+    </footer>
+
+    
+</body>
+</html>
