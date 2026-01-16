@@ -2,14 +2,14 @@
 CONFIGURATION PLOTLY 
 */
 
-const plotlyConfig = {
+const configPlotly = {
     responsive: true,
     displayModeBar: true,
     displaylogo: false,
     modeBarButtonsToRemove: ['lasso2d', 'select2d']
 };
 
-const plotlyLayout = {
+const miseEnPagePlotly = {
     paper_bgcolor: 'transparent',
     plot_bgcolor: 'transparent',
     font: {
@@ -42,54 +42,48 @@ const plotlyLayout = {
     }
 };
 
-
-const spotifyGreen = '#1DB954';
-const spotifyGreenLight = '#1ed760';
-
+const spotifyVert = '#1DB954';
+const spotifyVertEclat = '#1ed760';
 
 
+/*UTILITAIRES*/
 
 
-/*
-UTILITAIRES
-*/
-
-
-function formatNumber(num) {
-    if (num >= 1e9) return (num / 1e9).toFixed(1) + 'B';
-    if (num >= 1e6) return (num / 1e6).toFixed(1) + 'M';
-    if (num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
-    return num.toString();
+function formaterNombre(nombre) {
+    if (nombre >= 1e9) return (nombre / 1e9).toFixed(1) + 'Md'; // Milliards
+    if (nombre >= 1e6) return (nombre / 1e6).toFixed(1) + 'M';  // Millions
+    if (nombre >= 1e3) return (nombre / 1e3).toFixed(1) + 'k';  // Milliers
+    return nombre.toString();
 }
 
 /**
- * @param {string} elementId - 
- * @param {number|string} targetValue - 
- * @param {number} duration - 
+ * Anime un compteur numérique ou affiche du texte en fondu
+ * @param {string} idElement - L'ID de l'élément HTML à cibler
+ * @param {number|string} valeurCible - La valeur finale à atteindre
+ * @param {number} duree - La durée de l'animation en ms
  */
-function animateCounter(elementId, targetValue, duration = 2000) {
-    const element = document.getElementById(elementId);
-    if (!element || !targetValue) return;
+function animerCompteur(idElement, valeurCible, duree = 2000) {
+    const element = document.getElementById(idElement);
+    if (!element || !valeurCible) return;
     
-   
-    if (typeof targetValue === 'number') {
-        let startValue = 0;
-        const increment = targetValue / (duration / 16); // 
+    if (typeof valeurCible === 'number') {
+        let valeurDepart = 0;
+        const increment = valeurCible / (duree / 16); 
         
-        const counter = setInterval(() => {
-            startValue += increment;
-            if (startValue >= targetValue) {
-                element.textContent = Math.round(targetValue);
-                clearInterval(counter);
+        const compteur = setInterval(() => {
+            valeurDepart += increment;
+            if (valeurDepart >= valeurCible) {
+                element.textContent = Math.round(valeurCible);
+                clearInterval(compteur);
             } else {
-                element.textContent = Math.round(startValue);
+                element.textContent = Math.round(valeurDepart);
             }
         }, 16);
     } else {
-       
+        // Fade in pour mon texte
         element.style.opacity = '0';
         setTimeout(() => {
-            element.textContent = targetValue;
+            element.textContent = valeurCible;
             element.style.transition = 'opacity 0.8s ease-in';
             element.style.opacity = '1';
         }, 300);
@@ -99,108 +93,95 @@ function animateCounter(elementId, targetValue, duration = 2000) {
 
 
 
+ /* Effet pour le scroll */
 
 
-/*
-SCROLL REVEAL (Animation au défilement)
-*/
-
-
-function setupScrollReveal() {
-    const reveals = document.querySelectorAll('.scroll-reveal');
+function initialiserRevelationDefilement() {
     
-    const revealOnScroll = () => {
-        reveals.forEach(element => {
-            const elementTop = element.getBoundingClientRect().top;
-            const windowHeight = window.innerHeight;
+    const elementsAReveler = document.querySelectorAll('.revelation-defilement');
+    
+    const revelerAuDefilement = () => {
+        elementsAReveler.forEach(element => {
+            const positionElement = element.getBoundingClientRect().top;
+            const hauteurFenetre = window.innerHeight;
             
-            
-            if (elementTop < windowHeight * 0.8) {
+            if (positionElement < hauteurFenetre * 0.8) {
                 element.classList.add('visible');
             }
         });
     };
     
-    window.addEventListener('scroll', revealOnScroll);
-    revealOnScroll(); 
+    window.addEventListener('scroll', revelerAuDefilement);
+    revelerAuDefilement(); 
 }
 
 
+ /* CHARGEMENT ET NETTOYAGE DES DONNÉES */
 
 
-
-/*
-CHARGEMENT ET NETTOYAGE DES DONNÉES
-*/
-
-
- 
 Papa.parse('most_streamed_spotify-2023.csv', {
     download: true,
     header: true,
     skipEmptyLines: true,
     dynamicTyping: false, 
-    complete: function(results) {
-        const data = results.data;
-        console.log('📊 Données brutes chargées:', data.length, 'lignes');
+    complete: function(resultats) {
+        const donneesBrutes = resultats.data;
+        console.log('📊 Données brutes chargées:', donneesBrutes.length, 'lignes');
 
+        
+     /* NETTOYAGE DES DONNÉES (Version sécurisée anti-bug) */
+        
+        const donneesNettoyees = donneesBrutes.map(ligne => {
+            // Nettoyage des streams (enlève les virgules ou caractères non numériques)
+            let streamsBrut = String(ligne['streams'] || '').trim();
+            streamsBrut = streamsBrut.replace(/[^0-9]/g, ''); 
+            
+            const streams = parseInt(streamsBrut) || 0;
+            
+            return {
+                nom_titre: String(ligne['track_name'] || '').trim(),
+                nom_artiste: String(ligne['artist(s)_name'] || '').trim(),
+                streams: streams,
+                bpm: parseInt(ligne['bpm']) || 0,
+                dansabilite: parseInt(ligne['danceability_%']) || 0,
+                valence: parseInt(ligne['valence_%']) || 0,
+                energie: parseInt(ligne['energy_%']) || 0,
+                mois_sortie: parseInt(ligne['released_month']) || 0,
+                jour_sortie: parseInt(ligne['released_day']) || 0,
+                acousticness: parseInt(ligne['acousticness_%']) || 0,
+            };
+        }).filter(ligne => {
+            
+            return ligne.bpm > 0 && 
+                   ligne.nom_titre.length > 0 && 
+                   ligne.streams > 0 && 
+                   ligne.streams < 4000000000; 
+        });
 
 
 
         
-/*
-NETTOYAGE DES DONNÉES (Version sécurisée anti-bug)
-*/
-const cleanData = data.map(row => {
-   
-    let streamsRaw = String(row['streams'] || '').trim();
-    
-    
-    streamsRaw = streamsRaw.replace(/[^0-9]/g, ''); 
-    
-    
-    const streams = parseInt(streamsRaw) || 0;
-    
-    return {
-        track_name: String(row['track_name'] || '').trim(),
-        artist_name: String(row['artist(s)_name'] || '').trim(),
-        streams: streams,
-        bpm: parseInt(row['bpm']) || 0,
-        danceability: parseInt(row['danceability_%']) || 0,
-        valence: parseInt(row['valence_%']) || 0,
-        energy: parseInt(row['energy_%']) || 0
-    };
-}).filter(row => {
-    // SÉCURITÉ : On garde la ligne seulement si :
-    // - Le BPM est valide (> 0)
-    // - Le titre n'est pas vide
-    // - Les streams sont > 0 ET inférieurs à 4 milliards (Record du monde actuel)
-    return row.bpm > 0 && 
-           row.track_name.length > 0 && 
-           row.streams > 0 && 
-           row.streams < 4000000000; 
-});
-
-
-
-/*
-GÉNÉRATION DES VISUALISATIONS
-*/
+       /* GÉNÉRATION DES VISUALISATIONS */
         
-        
-        calculateKPIs(cleanData);
+        calculerIndicateurs(donneesNettoyees);
 
         
-        setTimeout(() => createBPMHistogram(cleanData), 400);
-        setTimeout(() => createScatterPlot(cleanData), 600);
-        setTimeout(() => createArtistsBar(cleanData), 800);
+        setTimeout(() => creerHistogrammeBPM(donneesNettoyees), 400);
+        setTimeout(() => creerGraphiqueChaleur(donneesNettoyees), 600);
+        setTimeout(() => creerBarresArtistes(donneesNettoyees), 800);
+        setTimeout(() => creerGraphiqueMiroir(donneesNettoyees), 1000);
+
+
         
-       
-        setupScrollReveal();
+
+
+        
+        initialiserRevelationDefilement();
     },
-    error: function(error) {
-        console.error('❌ Erreur de chargement du CSV:', error);
-        document.getElementById('kpi-top-track').textContent = 'Erreur de chargement des données';
+    error: function(erreur) {
+        console.error('❌ Erreur de chargement du CSV:', erreur);
+        const elementErreur = document.getElementById('indicateur-titre-top');
+        if (elementErreur) elementErreur.textContent = 'Erreur de chargement';
     }
 });
 
@@ -208,45 +189,46 @@ GÉNÉRATION DES VISUALISATIONS
 
 
 
-/*
-CALCUL DES KPIs (avec animation)
-*/
 
 
-function calculateKPIs(data) {
+
+/*CALCUL DES INDICATEURS (KPIs) AVEC ANIMATION */
+
+
+function calculerIndicateurs(donnees) {
     
-    //KPI 1: Titre Champion 
-    const topTrack = data.reduce((max, item) => 
-        item.streams > max.streams ? item : max, data[0]);
+    // INDICATEUR 1: Titre Champion (Top Track)
+    const meilleurTitre = donnees.reduce((max, item) => 
+        item.streams > max.streams ? item : max, donnees[0]);
     
-    animateCounter('kpi-top-track', topTrack.track_name, 1500);
+    
+    animerCompteur('indicateur-titre-top', meilleurTitre.nom_titre, 1500);
     setTimeout(() => {
-        document.getElementById('kpi-top-track-streams').textContent = 
-            formatNumber(topTrack.streams) + ' streams';
+        const sousTexte = document.getElementById('indicateur-titre-top-streams');
+        if(sousTexte) sousTexte.textContent = formaterNombre(meilleurTitre.streams) + ' streams';
     }, 1500);
 
-    //KPI 2: BPM Moyen 
-    const avgBPM = Math.round(
-        data.reduce((sum, item) => sum + item.bpm, 0) / data.length
+    // INDICATEUR 2: BPM Moyen
+    const bpmMoyen = Math.round(
+        donnees.reduce((somme, item) => somme + item.bpm, 0) / donnees.length
     );
-    animateCounter('kpi-avg-bpm', avgBPM, 2000);
+    animerCompteur('indicateur-bpm-moyen', bpmMoyen, 2000);
 
-    
-    const artistCounts = {};
-    data.forEach(item => {
-        
-        const artist = item.artist_name.split(',')[0].trim();
-        artistCounts[artist] = (artistCounts[artist] || 0) + 1;
+    // INDICATEUR 3: Top Artiste
+    const compteArtistes = {};
+    donnees.forEach(item => {
+        // On prend seulement le premier artiste si c'est un duo
+        const artiste = item.nom_artiste.split(',')[0].trim();
+        compteArtistes[artiste] = (compteArtistes[artiste] || 0) + 1;
     });
     
-    
-    const topArtist = Object.entries(artistCounts)
+    const meilleurArtiste = Object.entries(compteArtistes)
         .sort((a, b) => b[1] - a[1])[0];
     
-    animateCounter('kpi-top-artist', topArtist[0], 1800);
+    animerCompteur('indicateur-artiste-top', meilleurArtiste[0], 1800);
     setTimeout(() => {
-        document.getElementById('kpi-top-artist-count').textContent = 
-            topArtist[1] + ' titres dans le top';
+        const sousTexteArtiste = document.getElementById('indicateur-artiste-top-nombre');
+        if(sousTexteArtiste) sousTexteArtiste.textContent = meilleurArtiste[1] + ' titres dans le top';
     }, 1800);
 }
 
@@ -255,21 +237,22 @@ function calculateKPIs(data) {
 
 
 
-/*
-GRAPHIQUE 1: HISTOGRAMME BPM
-*/
 
 
-function createBPMHistogram(data) {
-    const bpmValues = data.map(d => d.bpm);
+
+/*GRAPHIQUE 1: HISTOGRAMME POUR LE BPM */
+
+
+function creerHistogrammeBPM(donnees) {
+    const valeursBPM = donnees.map(d => d.bpm);
 
     const trace = {
-        x: bpmValues,
+        x: valeursBPM,
         type: 'histogram',
         marker: {
-            color: spotifyGreen,
+            color: spotifyVert,
             line: {
-                color: spotifyGreenLight,
+                color: spotifyVertEclat,
                 width: 1.5
             }
         },
@@ -281,23 +264,22 @@ function createBPMHistogram(data) {
     };
 
     const layout = {
-        ...plotlyLayout,
+        ...miseEnPagePlotly,
         xaxis: {
-            ...plotlyLayout.xaxis,
+            ...miseEnPagePlotly.xaxis,
             title: 'Tempo (BPM - Battements par minute)',
             range: [60, 220]
         },
         yaxis: {
-            ...plotlyLayout.yaxis,
+            ...miseEnPagePlotly.yaxis,
             title: 'Nombre de titres'
         }
     };
 
-   
-    Plotly.newPlot('bpm-histogram', [trace], layout, plotlyConfig);
     
+    Plotly.newPlot('histogramme-bpm', [trace], layout, configPlotly);
     
-    Plotly.animate('bpm-histogram', {
+    Plotly.animate('histogramme-bpm', {
         data: [trace],
         layout: layout
     }, {
@@ -317,70 +299,59 @@ function createBPMHistogram(data) {
 
 
 
-/*
-GRAPHIQUE 2: SCATTER PLOT (Danceability vs Valence)
-*/
 
 
-function createScatterPlot(data) {
-    
-    
-    const maxStreams = Math.max(...data.map(d => d.streams));
-    const minSize = 6;
-    const maxSize = 35;
-
+function creerGraphiqueChaleur(donnees) {
     const trace = {
-        x: data.map(d => d.danceability),
-        y: data.map(d => d.valence),
-        mode: 'markers',
-        type: 'scatter',
-        marker: {
-            
-            size: data.map(d => minSize + (d.streams / maxStreams) * (maxSize - minSize)),
-            
-            color: data.map(d => d.energy),
-            colorscale: [
-                [0, '#1a1a1a'],      
-                [0.5, spotifyGreen],  
-                [1, spotifyGreenLight] 
-            ],
-            opacity: 0.75,
-            line: {
-                color: 'rgba(255,255,255,0.3)',
-                width: 1
-            },
-            colorbar: {
-                title: 'Énergie (%)',
-                tickfont: { color: '#b3b3b3' },
-                titlefont: { color: '#b3b3b3' },
-                thickness: 15,
-                len: 0.7
-            }
-        },
-        text: data.map(d => `<b>${d.track_name}</b><br>${d.artist_name}`),
-        hovertemplate: 
-            '%{text}<br>' +
-            '<b>Danceability:</b> %{x}%<br>' +
-            '<b>Valence:</b> %{y}%<br>' +
-            '<extra></extra>'
-    };
-
-    const layout = {
-        ...plotlyLayout,
-        xaxis: {
-            ...plotlyLayout.xaxis,
-            title: 'Danceability (capacité à danser, en %)',
-            range: [0, 100]
-        },
-        yaxis: {
-            ...plotlyLayout.yaxis,
-            title: 'Valence / Positivité musicale (en %)',
-            range: [0, 100]
+        x: donnees.map(d => d.dansabilite),
+        y: donnees.map(d => d.valence),
+        type: 'histogram2d',
+        // On définit la taille des "cases" (hexagones/carrés)
+        nbinsx: 20,
+        nbinsy: 20,
+        colorscale: [
+            [0, '#121212'],       // Fond sombre (vide)
+            [0.2, '#00441b'],    // Vert très profond
+            [0.5, '#1DB954'],    // Vert Spotify (densité moyenne)
+            [1, '#1ed760']       // Vert fluo (densité maximale)
+        ],
+        showscale: true,
+        colorbar: {
+            title: 'Concentration',
+            titlefont: { color: '#b3b3b3' },
+            tickfont: { color: '#b3b3b3' },
+            thickness: 10
         }
     };
 
-    
-    Plotly.newPlot('scatter-plot', [trace], layout, plotlyConfig);
+    const layout = {
+        ...miseEnPagePlotly,
+        xaxis: { 
+            title: 'DANSABILITÉ (%)', 
+            range: [20, 100], 
+            gridcolor: '#282828',
+            zeroline: false 
+        },
+        yaxis: { 
+            title: 'VALENCE (POSITIVITÉ) (%)', 
+            range: [0, 100], 
+            gridcolor: '#282828',
+            zeroline: false 
+        },
+        // On ajoute une annotation pour expliquer le "pic"
+        annotations: [{
+            x: 75, y: 75,
+            text: "LE CŒUR DES HITS",
+            showarrow: true,
+            arrowhead: 2,
+            arrowcolor: '#ffffff',
+            ax: 40, ay: -40,
+            font: { color: '#ffffff', weight: 'bold', size: 12 },
+            bgcolor: 'rgba(29, 185, 84, 0.8)'
+        }]
+    };
+
+    Plotly.newPlot('graphique-dispersion', [trace], layout, configPlotly);
 }
 
 
@@ -389,43 +360,38 @@ function createScatterPlot(data) {
 
 
 
-
-/* 
-GRAPHIQUE 3: TOP 10 ARTISTES (Barres horizontales)
-*/
+/* GRAPHIQUE 3: TOP 10 ARTISTES Barres horizontales*/
 
 
-function createArtistsBar(data) {
+function creerBarresArtistes(donnees) {
     
-    
-    const artistCounts = {};
-    data.forEach(item => {
-      
-        const artist = item.artist_name.split(',')[0].trim();
-        if (artist) {
-            artistCounts[artist] = (artistCounts[artist] || 0) + 1;
+    const compteArtistes = {};
+    donnees.forEach(item => {
+        const artiste = item.nom_artiste.split(',')[0].trim();
+        if (artiste) {
+            compteArtistes[artiste] = (compteArtistes[artiste] || 0) + 1;
         }
     });
 
-   
-    const top10 = Object.entries(artistCounts)
+    // Trier prendre le Top 10
+    const top10 = Object.entries(compteArtistes)
         .sort((a, b) => b[1] - a[1])
         .slice(0, 10)
         .reverse(); 
 
     const trace = {
-        y: top10.map(a => a[0]), 
-        x: top10.map(a => a[1]), 
+        y: top10.map(a => a[0]), // Noms artistes
+        x: top10.map(a => a[1]), // Nombre de titres
         type: 'bar',
         orientation: 'h', 
         marker: {
-            
             color: top10.map((_, i) => {
-                const intensity = 0.5 + (i / 10) * 0.5;
-                return `rgba(29, 185, 84, ${intensity})`;
+                
+                const intensite = 0.5 + (i / 10) * 0.5;
+                return `rgba(29, 185, 84, ${intensite})`;
             }),
             line: {
-                color: spotifyGreenLight,
+                color: spotifyVertEclat,
                 width: 1.5
             }
         },
@@ -433,27 +399,24 @@ function createArtistsBar(data) {
     };
 
     const layout = {
-        ...plotlyLayout,
+        ...miseEnPagePlotly,
         xaxis: {
-            ...plotlyLayout.xaxis,
+            ...miseEnPagePlotly.xaxis,
             title: 'Nombre de titres dans le dataset'
         },
         yaxis: {
-            ...plotlyLayout.yaxis,
+            ...miseEnPagePlotly.yaxis,
             title: '',
             tickfont: { size: 12 },
             automargin: true 
         },
-        margin: { ...plotlyLayout.margin, l: 140 }
+        margin: { ...miseEnPagePlotly.margin, l: 140 }
     };
 
-
-
-// Créer le graphique
-    Plotly.newPlot('artists-bar', [trace], layout, plotlyConfig);
+  
+    Plotly.newPlot('barres-artistes', [trace], layout, configPlotly);
     
-   
-    Plotly.animate('artists-bar', {
+    Plotly.animate('barres-artistes', {
         data: [trace],
         layout: layout
     }, {
@@ -472,4 +435,118 @@ function createArtistsBar(data) {
 
 
 
-document.addEventListener('DOMContentLoaded', setupScrollReveal);
+
+
+
+
+
+
+
+
+
+
+
+function creerGraphiqueMiroir(donnees) {
+    const nb = donnees.length;
+    
+    // 1. Calcul des moyennes et arrondi immédiat à l'unité
+    const moyAcoustique = Math.round(donnees.reduce((s, d) => s + (parseInt(d.acousticness) || 15), 0) / nb);
+    const moyEnergie = Math.round(donnees.reduce((s, d) => s + d.energie, 0) / nb);
+
+    const traceAcoustique = {
+        x: [-moyAcoustique],
+        y: ['Moyenne des Hits'],
+        name: 'Texture Acoustique',
+        type: 'bar',
+        orientation: 'h',
+        marker: { 
+            color: '#ffffff',
+            line: { color: '#ffffff', width: 1 }
+        },
+        // AJOUT DES ÉCRITURES
+        text: [moyAcoustique + '%'],
+        textposition: 'inside',
+        insidetextanchor: 'middle',
+        textfont: { color: '#000000', size: 18, family: 'Montserrat', weight: 900 },
+        // CORRECTION : On affiche moyAcoustique en positif sans décimales
+        customdata: [moyAcoustique],
+        hovertemplate: 'Acoustique: %{customdata}%<extra></extra>'
+    };
+
+    const traceEnergie = {
+        x: [moyEnergie],
+        y: ['Moyenne des Hits'],
+        name: 'Puissance Numérique',
+        type: 'bar',
+        orientation: 'h',
+        marker: { 
+            color: '#1DB954',
+            line: { color: '#1ed760', width: 1 }
+        },
+        // AJOUT DES ÉCRITURES
+        text: [moyEnergie + '%'],
+        textposition: 'inside',
+        insidetextanchor: 'middle',
+        textfont: { color: '#ffffff', size: 18, family: 'Montserrat', weight: 900 },
+        // CORRECTION : On affiche moyEnergie arrondi sans décimales
+        customdata: [moyEnergie],
+        hovertemplate: 'Énergie: %{customdata}%<extra></extra>'
+    };
+
+    const layout = {
+        ...miseEnPagePlotly,
+        barmode: 'relative',
+        xaxis: {
+            title: 'Dominance de la production',
+            gridcolor: '#282828',
+            // On simplifie l'axe comme discuté pour que ce soit plus beau
+            tickvals: [-100, 0, 100],
+            ticktext: ['100% Acoustique', 'Équilibre', '100% Numérique'],
+            range: [-110, 110],
+            zeroline: true,
+            zerolinecolor: '#ffffff'
+        },
+        yaxis: { visible: false },
+        margin: { t: 50, r: 50, b: 80, l: 50 },
+        showlegend: true,
+        legend: { 
+            x: 0.5, 
+            y: -0.4, 
+            xanchor: 'center', 
+            orientation: 'h', 
+            font: { color: '#ffffff', size: 12 } 
+        }
+    };
+
+    Plotly.newPlot('graphique-miroir-adn', [traceAcoustique, traceEnergie], layout, configPlotly);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Lancement au chargement de la page
+document.addEventListener('DOMContentLoaded', initialiserRevelationDefilement);
