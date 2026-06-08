@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<script>document.documentElement.classList.add('js');</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Site Dune — Thylan Colleville</title>
+<meta name="description" content="Reproduction en code d'un site one-page Dune — HTML, CSS, JS, Leaflet.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Hanken+Grotesk:ital,wght@0,400..800;1,400..600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body style="--accent:var(--c-developper)">
+
+<header class="masthead">
+  <div class="wrap masthead-inner">
+    <a class="brand" href="index.html">Thylan Colleville</a>
+    <nav class="nav">
+      <a href="index.html">Accueil</a>
+      <a href="projets.html">Projets</a>
+      <a href="competences.html">Compétences</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="wrap project-head load">
+    <p class="kicker">Projet 02 — Intégration web</p>
+    <h1 class="project-title">Site <em>Dune</em></h1>
+    <div class="tags">
+      <span class="tag tag--developper">Développer</span>
+    </div>
+    <div class="project-meta">
+      <div class="meta-cell"><span class="kicker">Cadre</span><p>Projet d'intégration — modèle imposé</p></div>
+      <div class="meta-cell"><span class="kicker">Année</span><p>2ᵉ année · 2025–2026</p></div>
+      <div class="meta-cell"><span class="kicker">Outils</span><p>HTML, CSS, JavaScript, Leaflet, OpenStreetMap</p></div>
+      <div class="meta-cell"><span class="kicker">Livrable</span><p>Site one-page fonctionnel</p></div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <section class="section section-grid" data-reveal>
+      <div class="section-label">Le contexte</div>
+      <div class="section-body">
+        <p>Le film était imposé&nbsp;: on nous fournissait des <strong>captures d'écran d'un site one-page officiel de Dune</strong>, et l'objectif était de le <strong>reproduire fidèlement en code</strong>. C'est un exercice classique mais redoutable&nbsp;: pas de page blanche, mais une exigence de précision — chaque marge, chaque superposition d'image, chaque transition doit coller au modèle.</p>
+      </div>
+    </section>
+
+    <section class="section section-grid" data-reveal>
+      <div class="section-label">La mission</div>
+      <div class="section-body">
+        <p>Restituer l'expérience complète du site sur une seule page&nbsp;: un hero avec vidéo, une section «&nbsp;About the film&nbsp;», un carrousel de personnages, une galerie d'images, et un module «&nbsp;Find a theater&nbsp;» avec une carte interactive. Le tout responsive et cohérent avec la direction artistique très épurée de l'univers Dune.</p>
+      </div>
+    </section>
+
+    <section class="section section-grid" data-reveal>
+      <div class="section-label">La démarche</div>
+      <div class="section-body">
+        <p>J'ai posé d'abord une <strong>structure HTML sémantique</strong>, puis le CSS pour reproduire la mise en page&nbsp;: typographie fine, blocs translucides, images en plein écran et superpositions caractéristiques du modèle. La logique <strong>responsive</strong> a été pensée dès le départ pour ne pas casser ces compositions sur mobile.</p>
+
+        <figure><img src="assets/dune-1.png" alt="Hero du site Dune" loading="lazy"><figcaption>Hero — vidéo plein écran «&nbsp;Only in theaters&nbsp;»</figcaption></figure>
+
+        <p>En <strong>JavaScript</strong>, j'ai géré les interactions&nbsp;: navigation du carrousel de personnages et de la galerie vidéos/images. La partie la plus formatrice a été le module <strong>«&nbsp;Find a theater&nbsp;»</strong>&nbsp;: j'ai intégré la bibliothèque <strong>Leaflet</strong> couplée à <strong>OpenStreetMap</strong> pour afficher une carte dynamique, avec une demande de <strong>géolocalisation</strong> de l'utilisateur. C'était ma première intégration d'une bibliothèque cartographique tierce dans un projet.</p>
+
+        <div class="fig-row">
+          <figure><img src="assets/dune-3.png" alt="Carrousel de personnages" loading="lazy"><figcaption>Carrousel — Characters</figcaption></figure>
+          <figure><img src="assets/dune-2.png" alt="Section About the film" loading="lazy"><figcaption>Section — About the film</figcaption></figure>
+        </div>
+
+        <figure><img src="assets/dune-5.png" alt="Module Find a theater avec carte Leaflet" loading="lazy"><figcaption>Find a theater — carte Leaflet + OpenStreetMap</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="section section-grid" data-reveal>
+      <div class="section-label">Le résultat &amp; mon recul</div>
+      <div class="section-body">
+        <p>Le rendu reproduit le modèle de bout en bout, interactions comprises. Je me sens <strong>à l'aise</strong> sur l'intégration HTML/CSS/JS et, surtout, j'ai gagné en autonomie sur l'<strong>intégration d'une bibliothèque externe</strong> — savoir lire une doc, brancher Leaflet et le faire dialoguer avec une API du navigateur est une compétence que je réutiliserai.</p>
+        <p>Je suis en <strong>voie d'acquisition</strong> sur deux points que je veux travailler&nbsp;: l'<strong>accessibilité</strong> (gestion clavier des carrousels, contrastes, alternatives textuelles) et l'<strong>optimisation des médias</strong> (poids des images/vidéos, lazy-loading systématique) pour un site plus performant que le simple «&nbsp;ça ressemble au modèle&nbsp;».</p>
+      </div>
+    </section>
+
+    <a class="next" href="projet-affiche-olb.html">
+      <span><span class="kicker">Projet suivant</span><span class="next-title">Affiche OLB</span></span>
+      <span class="next-arrow">→</span>
+    </a>
+
+    <a class="backlink" href="projets.html">← Tous les projets</a>
+  </div>
+</main>
+
+<footer class="foot wrap">
+  <span>Thylan Colleville — © 2026</span>
+  <span>BUT MMI · Création Numérique</span>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>
